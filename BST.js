@@ -63,8 +63,22 @@ class BST {
         }
         return false;
     }
+
+    
     
 }
+
+function preorder(root) {
+        var arr = [];
+        if(root != null){
+            arr.push(root);
+            preorder(root.left);
+            preorder(root.right);
+        }
+        return arr;
+        
+        
+    };
 
 
 const newTree = new BST();
@@ -74,4 +88,9 @@ newTree.insert(90)
 newTree.insert(10)
 newTree.insert(20)
 newTree.insert(1000)
-console.log(newTree.search(20))
+
+console.log(preorder(newTree))
+
+
+
+
