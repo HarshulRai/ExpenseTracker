@@ -9,8 +9,15 @@ function saveToLocalStorage(event) {
         itemDescription,
         categoryType
     }
-    localStorage.setItem(obj.itemDescription, JSON.stringify(obj))
-    showNewExpenseOnScreen(obj)
+
+    axios.post("https://crudcrud.com/api/d2be38a3fffe4760b891f480e9b7e474/appointmentData", obj)
+        .then((response) => {
+            showNewExpenseOnScreen(response.data)
+            console.log(response)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
 }
 
 function favTutorial() {  
@@ -19,15 +26,18 @@ function favTutorial() {
     }  
 
 window.addEventListener("DOMContentLoaded", () => {
-    const localStorageObj = localStorage;
-    const localstoragekeys  = Object.keys(localStorageObj)
+    axios.get("https://crudcrud.com/api/d2be38a3fffe4760b891f480e9b7e474/appointmentData")
+        .then((response) => {
+            console.log(response)
+            for(var i=0; i<response.data.length; i++){
+                showNewExpenseOnScreen(response.data[i]) 
+            }
+                
+        })
+        .catch((err) => {
+            console.log(err)
+        })
 
-    for(var i =0; i< localstoragekeys.length; i++){
-        const key = localstoragekeys[i]
-        const expenseDetails = localStorageObj[key];
-        const expenseDetailsObj = JSON.parse(expenseDetails);
-        showNewExpenseOnScreen(expenseDetailsObj)
-    }
 })
 
 function showNewExpenseOnScreen(expense){
@@ -40,9 +50,9 @@ function showNewExpenseOnScreen(expense){
     }
 
     const parentNode = document.getElementById('listOfUsers');
-    const childHTML = `<li id=${expense.itemDescription}> ${expense.itemAmount} - ${expense.categoryType}
-                            <button onclick=deleteExpense('${expense.itemDescription}')> Delete </button>
-                            <button onclick=editExpenseDetails('${expense.itemDescription}','${expense.itemAmount}','${expense.categoryType}')>Edit </button>
+    const childHTML = `<li id=${expense._id}> ${expense.itemAmount} - ${expense.categoryType} - ${expense.itemDescription}
+                            <button onclick=deleteExpense('${expense._id}')> Delete</button>
+                            <button onclick=editExpenseDetails('${expense.itemDescription}','${expense.itemAmount}','${expense.categoryType}','${expense._id})>Edit </button>
                          </li>`
 
     parentNode.innerHTML = parentNode.innerHTML + childHTML;
@@ -50,27 +60,32 @@ function showNewExpenseOnScreen(expense){
 
 
 
-function editExpenseDetails(itemDescription, itemAmount, categoryType){
+function editExpenseDetails(itemDescription, itemAmount, categoryType, expenseID){
 
     document.getElementById('description').value = itemDescription;
     document.getElementById('amount').value = itemAmount;
-    document.getElementById('favourite').value =categoryType;
+    document.getElementById('favourite').value = categoryType;
+    
 
-    deleteExpense(itemDescription)
+    deleteExpense(expenseID)
  }
 
 
 
-function deleteExpense(itemDescription){
-    console.log(itemDescription)
-    localStorage.removeItem(itemDescription);
-    removeExpensefromScreen(itemDescription);
+function deleteExpense(expenseID){
+    axios.delete(`https://crudcrud.com/api/d2be38a3fffe4760b891f480e9b7e474/appointmentData/${expenseID}`)
+        .then((response) => {
+            removeExpensefromScreen(expenseID);
+        })
+        .catch((err) => {
+            console.log(err)
+        })     
 
 }
 
-function removeExpensefromScreen(itemDescription){
+function removeExpensefromScreen(expenseID){
     const parentNode = document.getElementById('listOfUsers');
-    const childNodeToBeDeleted = document.getElementById(itemDescription);
+    const childNodeToBeDeleted = document.getElementById(expenseID);
     if(childNodeToBeDeleted) {
         parentNode.removeChild(childNodeToBeDeleted)
     }

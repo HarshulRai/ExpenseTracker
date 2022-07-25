@@ -4,20 +4,21 @@
             <label> Expense Amount</label>
             <input id='amount' type="text" name="amount"  required/>
             <label> Description</label>
-            <input id='description' type="description" name="description"  required/>
+            <input id='description' type="text" name="description"  required/>
             <label> Choose a Category</label>
             
-            <select id = "myList" onchange = "favTutorial()" >  
+            <select id = "myList" onchange = "favTutorial()"  required>  
                 <option> ---Choose Category--- </option>  
                 <option> Movies </option>  
                 <option> Food </option>  
                 <option> Sports </option>  
                 <option> Books </option>  
                 </select>  
-                <input hidden type = "text" id = "favourite" size = "20">  
+                <input hidden type = "text" id = "favourite" name="favourite" size = "20">  
             <button> Add Expense </button>
         </form>
         <ul id='listOfUsers'></ul>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
         <script src="Expense_tracket.js"></script>           
     </body>
 </html>
